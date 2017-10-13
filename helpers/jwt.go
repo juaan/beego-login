@@ -10,6 +10,7 @@ import (
 // EzToken ...
 type EzToken struct {
 	Username string
+	ID       string
 	Expires  int64
 }
 

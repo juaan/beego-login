@@ -62,6 +62,37 @@ func GetAllUser() (dataResp Resp) {
 
 }
 
+// AddSong ...
+func AddSong(id string, songID string) (dataResp Resp) {
+	conn, coll := GetCollection("user")
+	defer conn.Close()
+
+	arr := []string{songID}
+
+	n, err := coll.Find(bson.M{"fav_tracks": bson.M{"$in": arr}}).Count()
+	if err != nil {
+		dataResp.Err = err.Error()
+		return
+	}
+
+	if n == 0 {
+		where := bson.M{"_id": bson.ObjectIdHex(id)}
+		cond := bson.M{"$push": bson.M{"fav_tracks": songID}}
+		err = coll.Update(where, cond)
+		if err != nil {
+			dataResp.Err = err.Error()
+			return
+		}
+
+		dataResp.Data = "Song has been added"
+		return
+	}
+
+	dataResp.Err = "song already in your fav list"
+	return
+
+}
+
 // GetJWT ...
 func GetJWT(loginData Login) (dataResp Resp) {
 	var user User
@@ -82,6 +113,7 @@ func GetJWT(loginData Login) (dataResp Resp) {
 	}
 	ezT := helpers.EzToken{
 		Username: user.Name,
+		ID:       user.ID.String(),
 		Expires:  time.Now().Unix() + 3600,
 	}
 	token, err := ezT.GetToken()

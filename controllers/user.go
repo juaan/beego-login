@@ -40,13 +40,28 @@ func (c *UserController) Get() {
 	}
 }
 
+// AddSong ...
+func (c *UserController) AddSong() {
+	songID := c.Input().Get("song_id")
+	user := c.Ctx.Input.Param(":id")
+	resp := models.AddSong(user, songID)
+
+	beego.Debug(songID)
+	beego.Debug(user)
+	// beego.Debug(resp)
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		beego.Error(err)
+	}
+}
+
 // FilterUser ...
 var FilterUser = func(c *context.Context) {
 
 	ezT := helpers.EzToken{}
 	authToken := strings.TrimSpace(c.Request.Header.Get("Authorization"))
 	valid, err := ezT.ValidateToken(authToken)
-	beego.Debug(valid)
 	if !valid {
 		c.ResponseWriter.WriteHeader(401)
 		resp := models.Resp{
@@ -59,5 +74,7 @@ var FilterUser = func(c *context.Context) {
 		}
 		return
 	}
+
+	beego.Debug("user valid")
 
 }

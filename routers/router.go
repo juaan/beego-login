@@ -21,6 +21,10 @@ func init() {
 			&controllers.UserController{},
 			"get:Get",
 		),
+		beego.NSRouter("/user/:id",
+			&controllers.UserController{},
+			"put:AddSong",
+		),
 	)
 
 	beego.AddNamespace(ns)
