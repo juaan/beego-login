@@ -45,6 +45,10 @@ type (
 		Artist    string        `json:"artist" bson:"artist"`
 		ArtistAva string        `json:"artist_ava" bson:"artist_ava"`
 	}
+	// SongBody ...
+	SongBody struct {
+		Song Song
+	}
 	// Songs ...
 	Songs []Song
 )
