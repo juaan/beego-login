@@ -25,10 +25,14 @@ func init() {
 			&controllers.UserController{},
 			"put:AddSong",
 		),
+		beego.NSRouter("/user/:id",
+			&controllers.UserController{},
+			"get:GetUserSongs",
+		),
 	)
 
+	beego.InsertFilter("/v1/user/*", beego.BeforeRouter, controllers.FilterUser)
 	beego.AddNamespace(ns)
 	// adding middleware to auth jwts
-	beego.InsertFilter("/v1/user/*", beego.BeforeRouter, controllers.FilterUser)
 
 }

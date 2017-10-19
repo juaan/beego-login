@@ -41,12 +41,22 @@ func (c *UserController) Get() {
 	}
 }
 
+// GetUserSongs ...
+func (c *UserController) GetUserSongs() {
+	resp := models.GetAllUser()
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		beego.Error(err)
+	}
+}
+
 // AddSong ...
 func (c *UserController) AddSong() {
 	var songBd models.Song
 	songBody := c.Ctx.Input.RequestBody
 	// songBodyString := c.
-	// beego.Warning(songBodyString)
+	// beego.Warning(songBodytest)
 	beego.Debug(string(songBody))
 	err := json.Unmarshal(songBody, &songBd)
 	if err != nil {
