@@ -3,6 +3,7 @@ package controllers
 import (
 	"beego-login/helpers"
 	"beego-login/models"
+	"encoding/json"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -40,15 +41,9 @@ func (c *UserController) Get() {
 	}
 }
 
-// AddSong ...
-func (c *UserController) AddSong() {
-	songID := c.Input().Get("song_id")
-	user := c.Ctx.Input.Param(":id")
-	resp := models.AddSong(user, songID)
-
-	beego.Debug(songID)
-	beego.Debug(user)
-	// beego.Debug(resp)
+// GetUserSongs ...
+func (c *UserController) GetUserSongs() {
+	resp := models.GetAllUser()
 
 	err := c.Ctx.Output.JSON(resp, false, false)
 	if err != nil {
@@ -56,9 +51,38 @@ func (c *UserController) AddSong() {
 	}
 }
 
+// AddSong ...
+func (c *UserController) AddSong() {
+	var songBd models.Song
+	songBody := c.Ctx.Input.RequestBody
+	// songBodyString := c.
+	// beego.Warning(songBodytest)
+	beego.Debug(string(songBody))
+	err := json.Unmarshal(songBody, &songBd)
+	if err != nil {
+		beego.Error(err)
+	} else {
+		// Add song to DB
+		models.InsertSong(songBd)
+	}
+
+	user := c.Ctx.Input.Param(":id")
+	// Add song to user
+	resp := models.AddSong(user, songBd.SongID)
+
+	beego.Debug(songBd)
+	beego.Debug(user)
+	// beego.Debug(resp)
+
+	err = c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		beego.Error(err)
+	}
+}
+
 // FilterUser ...
 var FilterUser = func(c *context.Context) {
-
+	// beego.Debug(string(c.Input.RequestBody))
 	ezT := helpers.EzToken{}
 	authToken := strings.TrimSpace(c.Request.Header.Get("Authorization"))
 	valid, err := ezT.ValidateToken(authToken)

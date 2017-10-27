@@ -127,3 +127,13 @@ func GetJWT(loginData Login) (dataResp Resp) {
 
 	return
 }
+
+// GetUserSongs ...
+// func GetUserSongs(id string) (dataResp Resp) {
+// 	conn, coll := GetCollection("user")
+// 	defer conn.Close()
+// 	var songs Songs
+//
+// 	err := coll.Find()
+// 	return
+// }
